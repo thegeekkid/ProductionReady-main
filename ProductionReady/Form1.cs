@@ -51,6 +51,9 @@ namespace ProductionReady
             if (checkedListBox1.CheckedItems.Count > 3)
             {
                 MessageBox.Show("Error: you can not select more than 3 production days.  Updates and reboots are an important part of keeping your computer safe and running smoothly.");
+            }else
+            {
+                saveDays();
             }
         }
 
@@ -63,23 +66,62 @@ namespace ProductionReady
                 {
                     Registry.LocalMachine.OpenSubKey("SOFTWARE", true).CreateSubKey("Semrau Software Consulting");
                     Registry.LocalMachine.OpenSubKey("SOFTWARE").OpenSubKey("Semrau Software Consulting", true).CreateSubKey("ProductionReady");
-                    RegistryKey root = Registry.LocalMachine.OpenSubKey("SOFTWARE").OpenSubKey("Semrau Software Consulting").OpenSubKey("ProductionReady", true);
-                    root.SetValue("DisableUpdates", checkBox1.Checked.ToString());
-                    root.SetValue("ChangeWallpaper", checkBox2.Checked.ToString());
-                    root.SetValue("DisableSleep", checkBox3.Checked.ToString());
-                    root.SetValue("DisableTimeout", checkBox4.Checked.ToString());
-                    root.SetValue("DisableScreensaver", checkBox5.Checked.ToString());
-                    root.SetValue("PreventShutdown", checkBox6.Checked.ToString());
                 }
 
-            }catch (Exception ex)
+                // Save settings
+                RegistryKey root = Registry.LocalMachine.OpenSubKey("SOFTWARE").OpenSubKey("Semrau Software Consulting").OpenSubKey("ProductionReady", true);
+                root.SetValue("DisableUpdates", checkBox1.Checked.ToString());
+                root.SetValue("ChangeWallpaper", checkBox2.Checked.ToString());
+                root.SetValue("DisableSleep", checkBox3.Checked.ToString());
+                root.SetValue("DisableTimeout", checkBox4.Checked.ToString());
+                root.SetValue("DisableScreensaver", checkBox5.Checked.ToString());
+                root.SetValue("PreventShutdown", checkBox6.Checked.ToString());
+                root.Close();
+
+                // Alert user
+                MessageBox.Show("Settings saved!");
+
+            }
+            catch (Exception ex)
             {
                 MessageBox.Show("Error saving settings:" + Environment.NewLine + ex.ToString());
             }
         }
         private void saveDays()
         {
+            try
+            {
+                // Check if registry keys exist yet or not
+                if (Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Semrau Software Consulting\ProductionReady", "DisableUpdates", null) == null)
+                {
+                    Registry.LocalMachine.OpenSubKey("SOFTWARE", true).CreateSubKey("Semrau Software Consulting");
+                    Registry.LocalMachine.OpenSubKey("SOFTWARE").OpenSubKey("Semrau Software Consulting", true).CreateSubKey("ProductionReady");
+                }
 
+                // Save days
+
+                string dayarray = "";
+
+                RegistryKey root = Registry.LocalMachine.OpenSubKey("SOFTWARE").OpenSubKey("Semrau Software Consulting").OpenSubKey("ProductionReady", true);
+                foreach (int day in checkedListBox1.CheckedIndices)
+                {
+                    if (dayarray != "")
+                    {
+                        dayarray += ",";
+                    }
+                    dayarray += day.ToString();
+
+                }
+
+                root.SetValue("ProductionDays", dayarray);
+
+                MessageBox.Show("Production days saved!");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error saving production days:" + Environment.NewLine + ex.ToString());
+            }
+            
         }
 
         private void button1_Click(object sender, EventArgs e)
