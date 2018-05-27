@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Win32;
+using System.Runtime.InteropServices;
 
 namespace ProductionReady
 {
@@ -199,6 +200,12 @@ namespace ProductionReady
 
             root.SetValue("pmode", "True");
 
+
+            if (checkBox2.Checked)
+            {
+                ChangeWallpaper();
+            }
+
             EnablePmodeGUI();
         }
 
@@ -237,5 +244,74 @@ namespace ProductionReady
         {
             DisablePmode();
         }
+
+        
+        
+
+
+        private void ChangeWallpaper()
+        {
+
+            Color color = Color.Black;
+
+            NativeMethods.SystemParametersInfo(
+                    NativeMethods.SPI_SETDESKWALLPAPER, 0, "",
+                    NativeMethods.SPIF_UPDATEINIFILE | NativeMethods.SPIF_SENDWININICHANGE
+                );
+
+            int[] elements = { NativeMethods.COLOR_DESKTOP };
+            int[] colors = { System.Drawing.ColorTranslator.ToWin32(color) };
+            NativeMethods.SetSysColors(elements.Length, elements, colors);
+
+            // Save value in registry so that it will persist
+            RegistryKey key = Registry.CurrentUser.OpenSubKey("Control Panel\\Colors", true);
+            key.SetValue(@"Background", string.Format("{0} {1} {2}", color.R, color.G, color.B));
+        }
+
+        private static class NativeMethods
+        {
+            public const int COLOR_DESKTOP = 1;
+            public const int SPI_SETDESKWALLPAPER = 20;
+            public const int SPIF_UPDATEINIFILE = 0x01;
+            public const int SPIF_SENDWININICHANGE = 0x02;
+
+            [DllImport("user32.dll")]
+            public static extern bool SetSysColors(int cElements, int[] lpaElements, int[] lpaRgbValues);
+
+            [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+            public static extern int SystemParametersInfo(int uAction, int uParam, string lpvParam, int fuWinIni);
+        }
+
+        private void DisableScreensaver()
+        {
+
+        }
+        private void DisableSleep()
+        {
+
+        }
+        private void DisableTimeout()
+        {
+
+        }
+        private void DisableUpdates()
+        {
+
+        }
+        private void PreventShutdown()
+        {
+
+        }
+        private void EnableShutdown()
+        {
+
+        }
+        private void EnableUpdates()
+        {
+
+        }
     }
+
+   
 }
+
