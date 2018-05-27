@@ -316,10 +316,31 @@ namespace ProductionReady
             proc.StartInfo.Arguments = @"-x -standby-timeout-dc 0";
             proc.Start();
             proc.WaitForExit();
+            proc.StartInfo.Arguments = @"-x -disk-timeout-ac 0";
+            proc.Start();
+            proc.WaitForExit();
+            proc.StartInfo.Arguments = @"-x -disk-timeout-dc 0";
+            proc.Start();
+            proc.WaitForExit();
+            proc.StartInfo.Arguments = @"-x -hibernate-timeout-ac 0";
+            proc.Start();
+            proc.WaitForExit();
+            proc.StartInfo.Arguments = @"-x -hibernate-timeout-dc 0";
+            proc.Start();
+            proc.WaitForExit();
         }
         private void DisableTimeout()
         {
-
+            Process proc = new Process();
+            proc.StartInfo.FileName = @"C:\Windows\System32\powercfg.exe";
+            proc.StartInfo.Arguments = @"-x -monitor-timeout-ac 0";
+            proc.StartInfo.CreateNoWindow = true;
+            proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            proc.Start();
+            proc.WaitForExit();
+            proc.StartInfo.Arguments = @"-x -monitor-timeout-dc 0";
+            proc.Start();
+            proc.WaitForExit();
         }
         private void DisableUpdates()
         {
