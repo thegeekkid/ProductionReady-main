@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Diagnostics;
 using Microsoft.Win32;
 using System.Runtime.InteropServices;
 
@@ -206,6 +207,21 @@ namespace ProductionReady
                 ChangeWallpaper();
             }
 
+            if (checkBox5.Checked)
+            {
+                DisableScreensaver();
+            }
+
+            if (checkBox3.Checked)
+            {
+                DisableSleep();
+            }
+
+            if (checkBox4.Checked)
+            {
+                DisableTimeout();
+            }
+
             EnablePmodeGUI();
         }
 
@@ -282,13 +298,24 @@ namespace ProductionReady
             public static extern int SystemParametersInfo(int uAction, int uParam, string lpvParam, int fuWinIni);
         }
 
+
+
         private void DisableScreensaver()
         {
-
+            Registry.CurrentUser.OpenSubKey("Control Panel").OpenSubKey("Desktop", true).DeleteValue("SCRNSAVE.EXE");
         }
         private void DisableSleep()
         {
-
+            Process proc = new Process();
+            proc.StartInfo.FileName = @"C:\Windows\System32\powercfg.exe";
+            proc.StartInfo.Arguments = @"-x -standby-timeout-ac 0";
+            proc.StartInfo.CreateNoWindow = true;
+            proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            proc.Start();
+            proc.WaitForExit();
+            proc.StartInfo.Arguments = @"-x -standby-timeout-dc 0";
+            proc.Start();
+            proc.WaitForExit();
         }
         private void DisableTimeout()
         {
@@ -311,7 +338,7 @@ namespace ProductionReady
 
         }
     }
+    
 
-   
 }
 
