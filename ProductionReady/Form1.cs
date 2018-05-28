@@ -284,7 +284,11 @@ namespace ProductionReady
 
         private void DisableScreensaver()
         {
-            Registry.CurrentUser.OpenSubKey("Control Panel").OpenSubKey("Desktop", true).DeleteValue("SCRNSAVE.EXE");
+            if (Registry.CurrentUser.OpenSubKey("Control Panel").OpenSubKey("Desktop").GetValue("SCRNSAVE.EXE", null) != null)
+            {
+                Registry.CurrentUser.OpenSubKey("Control Panel").OpenSubKey("Desktop", true).DeleteValue("SCRNSAVE.EXE");
+            }
+            
         }
         private void DisableSleep()
         {
