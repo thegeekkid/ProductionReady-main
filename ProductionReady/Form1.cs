@@ -222,6 +222,8 @@ namespace ProductionReady
                 DisableTimeout();
             }
 
+            RestartSvc();
+
             EnablePmodeGUI();
         }
 
@@ -237,6 +239,8 @@ namespace ProductionReady
             RegistryKey root = Registry.LocalMachine.OpenSubKey("SOFTWARE").OpenSubKey("Semrau Software Consulting").OpenSubKey("ProductionReady", true);
             root.SetValue("pmode", "False");
 
+            RestartSvc();
+
             DisablePmodeGUI();
         }
 
@@ -248,6 +252,7 @@ namespace ProductionReady
 
         private void Form1_Load_1(object sender, EventArgs e)
         {
+            
             readGUI();
         }
 
@@ -342,10 +347,7 @@ namespace ProductionReady
             proc.Start();
             proc.WaitForExit();
         }
-        private void DisableUpdates()
-        {
 
-        }
         private void PreventShutdown()
         {
 
@@ -354,9 +356,20 @@ namespace ProductionReady
         {
 
         }
-        private void EnableUpdates()
-        {
 
+
+        private void RestartSvc()
+        {
+            Process proc = new Process();
+            proc.StartInfo.FileName = @"C:\Windows\System32\net.exe";
+            proc.StartInfo.Arguments = "stop ProductionReadyService";
+            proc.StartInfo.CreateNoWindow = true;
+            proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            proc.Start();
+            proc.WaitForExit();
+            proc.StartInfo.Arguments = "start ProductionReadyService";
+            proc.Start();
+            proc.WaitForExit();
         }
     }
     
