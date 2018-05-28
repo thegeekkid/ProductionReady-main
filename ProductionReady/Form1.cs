@@ -24,31 +24,10 @@ namespace ProductionReady
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBox1.Checked)
-            {
-                groupBox1.Visible = true;
-            }else
-            {
-                if (!(checkBox6.Checked))
-                {
-                    groupBox1.Visible = false;
-                }
-            }
+            groupBox1.Visible = checkBox1.Checked;
         }
 
-        private void checkBox6_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkBox6.Checked)
-            {
-                groupBox1.Visible = true;
-            }else
-            {
-                if (!(checkBox1.Checked))
-                {
-                    groupBox1.Visible = false;
-                }
-            }
-        }
+        
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -84,7 +63,6 @@ namespace ProductionReady
                 root.SetValue("DisableSleep", checkBox3.Checked.ToString());
                 root.SetValue("DisableTimeout", checkBox4.Checked.ToString());
                 root.SetValue("DisableScreensaver", checkBox5.Checked.ToString());
-                root.SetValue("PreventShutdown", checkBox6.Checked.ToString());
 
                 // Alert user
                 MessageBox.Show("Settings saved!");
@@ -146,7 +124,6 @@ namespace ProductionReady
                 checkBox3.Checked = bool.Parse(root.GetValue("DisableSleep").ToString());
                 checkBox4.Checked = bool.Parse(root.GetValue("DisableTimeout").ToString());
                 checkBox5.Checked = bool.Parse(root.GetValue("DisableScreensaver").ToString());
-                checkBox6.Checked = bool.Parse(root.GetValue("PreventShutdown").ToString());
 
             }
 
@@ -348,14 +325,7 @@ namespace ProductionReady
             proc.WaitForExit();
         }
 
-        private void PreventShutdown()
-        {
 
-        }
-        private void EnableShutdown()
-        {
-
-        }
 
 
         private void RestartSvc()
